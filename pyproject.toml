@@ -1,0 +1,30 @@
+[project]
+name = "adf-parse"
+version = "0.1.0"
+description = "Convert Atlassian Document Format (ADF) from Jira/Confluence into plain text or Markdown"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [
+    { name = "Abhishek Hazra" },
+]
+keywords = ["adf", "atlassian", "jira", "confluence", "markdown", "parser"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Text Processing :: Markup :: Markdown",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/hazra1991/adf-parse"
+Repository = "https://github.com/hazra1991/adf-parse"
+
+[build-system]
+requires = ["uv_build>=0.10,<0.11"]
+build-backend = "uv_build"

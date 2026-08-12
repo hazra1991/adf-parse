@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Build artifacts
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+
+# uv
+# (uv.lock should be committed for apps; for a library it's optional — kept out here)
+uv.lock
+
+# IDE / tooling
+.idea/
+.vscode/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# OS
+.DS_Store
