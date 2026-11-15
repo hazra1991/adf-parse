@@ -1,6 +1,6 @@
 [project]
 name = "adf-parse"
-version = "0.1.0"
+version = "0.2.0"
 description = "Convert Atlassian Document Format (ADF) from Jira/Confluence into plain text or Markdown"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -24,6 +24,9 @@ dependencies = []
 [project.urls]
 Homepage = "https://github.com/hazra1991/adf-parse"
 Repository = "https://github.com/hazra1991/adf-parse"
+
+[dependency-groups]
+dev = ["pytest>=8"]
 
 [build-system]
 requires = ["uv_build>=0.10,<0.11"]

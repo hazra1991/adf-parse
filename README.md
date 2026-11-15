@@ -2,7 +2,7 @@
 
 Convert [Atlassian Document Format (ADF)](https://developer.atlassian.com/cloud/jira/platform/apis/document/structure/) — the JSON format used by Jira and Confluence — into plain text / Markdown.
 
-Zero dependencies. Supports paragraphs, headings, bullet/ordered lists (with nesting), code blocks, tables (with header detection), blockquotes, panels, expands, task lists, mentions, dates, statuses, inline cards, hard breaks, rules, and media references.
+Zero dependencies. Supports paragraphs, headings, bullet/ordered lists (with nesting), code blocks, tables (with header detection), blockquotes, panels, expands, task lists, mentions, emoji, dates, statuses, inline cards, hard breaks, rules, and media references. Inline marks render as real Markdown: links `[text](url)`, **bold**, *italic*, ~~strikethrough~~, and `code`.
 
 ## Installation
 
@@ -31,7 +31,17 @@ adf = {
 
 print(create_md_doc(adf))
 # ## Release notes
-# See the docs (https://example.com)
+#
+# [See the docs](https://example.com)
+```
+
+For search indexes, RAG, and LLM/agent pipelines, use plain mode — it drops emoji and all Markdown decoration (`**`, `*`, `~~`, backticks, `[text](url)`), giving clean text while links and media are still collected as data:
+
+```python
+from adf_parse import create_text_doc
+
+create_text_doc(adf)          # clean plain text
+parse_doc(adf, plain=True)    # same, with .links and .media_ref
 ```
 
 To also get the extracted links and media references, use `parse_doc`:

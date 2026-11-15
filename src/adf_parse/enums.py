@@ -36,6 +36,7 @@ class ADFNodeType(StrEnum):
     STATUS = "status"             # attrs.text = "IN PROGRESS", attrs.color
     DATE = "date"                 # attrs.timestamp (unix millis string)
     INLINE_CARD = "inlineCard"    # attrs.url = smart link URL
+    EMOJI = "emoji"               # attrs.text = "🔥", attrs.shortName = ":fire:"
     MEDIA_SINGLE = "mediaSingle"  # container for media node
     MEDIA = "media"               # attrs.id, attrs.type, attrs.collection
     MEDIA_INLINE = "mediaInline"  # Inline Media
@@ -44,8 +45,11 @@ class ADFNodeType(StrEnum):
 class ADFMarkType(StrEnum):
     """Mark types you actually care about during parsing."""
 
-    LINK = "link" 
+    LINK = "link"
     CODE = "code"
+    STRONG = "strong"
+    EM = "em"
+    STRIKE = "strike"
 
 class MediaRefType(StrEnum):
     URL = "url"

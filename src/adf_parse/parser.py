@@ -10,7 +10,13 @@ def format_list_item(prefix: str, item_text: str) -> str:
     return "\n".join([prefix + lines[0]] + [pad + line for line in lines[1:]])
 
 
-def parse_content(content: list[dict]) -> NodeCollection:
+def parse_content(content: list[dict], *, plain: bool = False) -> NodeCollection:
+    """Parse a list of ADF nodes.
+
+    plain=True skips cosmetic output (emoji, bold/italic/strike/code
+    decoration, link syntax) for clean text aimed at search indexes
+    and LLM pipelines. Links and media refs are still collected.
+    """
     collection = NodeCollection()
 
     for node in content:
@@ -19,7 +25,7 @@ def parse_content(content: list[dict]) -> NodeCollection:
 
         parts: list[str] = []
         if node.get("content"):
-            resp = parse_content(node["content"])
+            resp = parse_content(node["content"], plain=plain)
             collection.links.extend(resp.links)
             collection.media_ref.extend(resp.media_ref)
             parts = resp.collected_text
@@ -27,18 +33,35 @@ def parse_content(content: list[dict]) -> NodeCollection:
         # text (the only node with a "text" key)
         if node_type == ADFNodeType.TEXT:
             text = node["text"]
+            link_href = None
             for mark in node.get("marks", []):
-                if mark["type"] == ADFMarkType.LINK:
-                    ref = mark["attrs"]["href"]
-                    collection.links.append((text,ref))
-                    text = f"{text} ({ref})"
-                elif mark["type"] == ADFMarkType.CODE:
+                mark_type = mark["type"]
+                if mark_type == ADFMarkType.LINK:
+                    link_href = mark["attrs"].get("href", "")
+                elif plain:
+                    continue
+                elif mark_type == ADFMarkType.CODE:
                     text = f"`{text}`"
+                elif mark_type == ADFMarkType.STRONG:
+                    text = f"**{text}**"
+                elif mark_type == ADFMarkType.EM:
+                    text = f"*{text}*"
+                elif mark_type == ADFMarkType.STRIKE:
+                    text = f"~~{text}~~"
+            if link_href:
+                collection.links.append((node["text"], link_href))
+                if not plain:
+                    text = f"[{text}]({link_href})"
             collection.collected_text.append(text)
 
         # leaves: no content, info is in attrs
         elif node_type == ADFNodeType.HARD_BREAK:
             collection.collected_text.append("\n")
+
+        elif node_type == ADFNodeType.EMOJI:
+            emoji = attrs.get("text") or attrs.get("shortName", "")
+            if emoji and not plain:
+                collection.collected_text.append(emoji)
 
         elif node_type == ADFNodeType.MENTION:
             collection.collected_text.append(attrs.get("text") or f"@{attrs.get('id', 'unknown')}")
@@ -140,11 +163,25 @@ def parse_content(content: list[dict]) -> NodeCollection:
     return collection
 
 
-def parse_doc(adf: dict) -> NodeCollection:
+def parse_doc(adf: dict, *, plain: bool = False) -> NodeCollection:
     """Parse a full ADF document and return the collected text, links and media refs."""
-    return parse_content(adf.get("content") or [])
+    return parse_content(adf.get("content") or [], plain=plain)
 
 
 def create_md_doc(adf: dict) -> str:
-    """Render a full ADF document as a Markdown string."""
-    return "\n".join(parse_doc(adf).collected_text)
+    """Render a full ADF document as a Markdown string.
+
+    Top-level blocks are separated by blank lines so paragraphs,
+    lists and headings stay distinct blocks in Markdown.
+    """
+    return "\n\n".join(parse_doc(adf,plain=False).collected_text)
+
+
+def create_text_doc(adf: dict) -> str:
+    """Render a full ADF document as clean plain text.
+
+    No emoji, no bold/italic/strike/code decoration, no link syntax —
+    suited to search indexing and LLM/agent pipelines. Links and media
+    are still available via parse_doc(adf, plain=True).
+    """
+    return "\n\n".join(parse_doc(adf, plain=True).collected_text)
