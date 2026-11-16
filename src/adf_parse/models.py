@@ -5,6 +5,8 @@ from .enums import MediaRefType
 class MediaRef:
     ref_type:MediaRefType
     ref :str
+    alt:str | None = None 
+    media_type:str | None = None 
 
 @dataclass
 class NodeCollection:

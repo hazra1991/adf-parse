@@ -50,7 +50,7 @@ To also get the extracted links and media references, use `parse_doc`:
 result = parse_doc(adf)
 result.collected_text  # list of rendered blocks
 result.links           # list of (text, href) tuples
-result.media_ref       # list of MediaRef(ref_type, ref)
+result.media_ref       # list of MediaRef(ref_type, ref, alt, media_type)
 ```
 
 ## License

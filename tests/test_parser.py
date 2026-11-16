@@ -164,6 +164,17 @@ def test_media_refs_collected():
     ]
 
 
+def test_media_ref_alt_and_type_are_distinct():
+    adf = doc({"type": "mediaSingle", "content": [
+        {"type": "media", "attrs": {
+            "id": "abc-123", "type": "file", "alt": "screenshot.png",
+        }},
+    ]})
+    ref = parse_doc(adf).media_ref[0]
+    assert ref.alt == "screenshot.png"
+    assert ref.media_type == "file"
+
+
 def test_inline_card():
     adf = doc(para({"type": "inlineCard", "attrs": {"url": "https://jira/T-1"}}))
     result = parse_doc(adf)

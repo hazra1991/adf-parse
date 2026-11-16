@@ -136,8 +136,10 @@ def parse_content(content: list[dict], *, plain: bool = False) -> NodeCollection
         elif node_type in (ADFNodeType.MEDIA, ADFNodeType.MEDIA_INLINE):
             ref_type  =  MediaRefType.URL if attrs.get("url") else MediaRefType.ID
             ref:str = attrs.get(ref_type.value,"")
+            alt: str | None = attrs.get("alt")
+            media_type: str | None = attrs.get("type")
             if ref:
-                collection.media_ref.append(MediaRef(ref_type=ref_type,ref=ref))
+                collection.media_ref.append(MediaRef(ref_type=ref_type, ref=ref, alt=alt, media_type=media_type))
 
         # ---- table ----
         elif node_type in (ADFNodeType.TABLE_HEADER, ADFNodeType.TABLE_CELL):

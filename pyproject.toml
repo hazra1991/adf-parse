@@ -1,6 +1,6 @@
 [project]
 name = "adf-parse"
-version = "0.2.0"
+version = "0.3.0"
 description = "Convert Atlassian Document Format (ADF) from Jira/Confluence into plain text or Markdown"
 readme = "README.md"
 requires-python = ">=3.11"
